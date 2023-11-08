@@ -1,0 +1,29 @@
+.fondo-personalizado {
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fondo-personalizado img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /*RESPONSIVE*/
+
+  fondo-personalizado {
+          /*background-image: url('../../IMAGENES/box_img.png');*/
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh; /* Ajusta la altura a la altura de la ventana */
+  }
+  h2 {
+    color: black;
+    font-family: Times, serif, serif;
+  }

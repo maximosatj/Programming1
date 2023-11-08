@@ -1,0 +1,14 @@
+# Ignorar la carpeta venv
+back/venv/
+
+# Ignorar la carpeta migrations
+back/migrations/
+
+# Ignorar la carpeta _pycache_
+back/_pycache_/
+
+# Ignorar el archivo
+node_modules
+__pycache__
+activateVenv.cmd
+deactivateVenv.cmd
