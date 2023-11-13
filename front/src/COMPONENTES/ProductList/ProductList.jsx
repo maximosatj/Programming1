@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from '../../CONTEXT/UserContext'
+import {Swal} from 'sweetalert2'
+import { useNavigate } from 'react-router'
 
 
 
@@ -10,7 +12,14 @@ export const ProductList = () => {
 
     const [products, setProducts] = useState([]);
 
-      
+    const [editedProduct, setEditedProduct] = useState({ id: 0, name: '', price: '', stock:'', description: '' });
+
+    const {navigate} = useNavigate();
+
+    useEffect(() => {
+        fetchProduct();
+      }, []);
+
     const fetchProduct = async () => {
         try {
             const response = await axios.get('http://localhost:5000/products');
@@ -20,10 +29,6 @@ export const ProductList = () => {
             console.error(error);
         }
     };
-
-    useEffect(() => {
-        fetchProduct();
-      }, []);
 
     const onBuyProduct = async (productid) => {
         const values = {
@@ -39,17 +44,53 @@ export const ProductList = () => {
         }
       };
 
-      const onDeleteProduct = async (productid) => {
+      const deleteProduct = async (productId) => {
         try{
-            const response = axios.delete(`http://localhost:5000/product/${productid}`);
-            console.log(response);
-            fetchProduct();
+            const response = await axios.delete(`http://localhost:5000/product/${productId}` );
+            if (response.data){
+                fetchProduct();
+            }
         }
         catch(error){
             console.log(error)
         }
       };
+
+
+   //Editar empleo
+
+    //Carga los "valores" del trabajo en la ventana modal (name, description, experience)
+    const onEditProduct = (product) => {
+        setEditedProduct(product);
+    };
     
+    // Actualiza los campos que se editaron dentro de la ventana modal
+    //[e.target.name] es nombre del campo que sufrio un cambio 
+    // e.target.value es valor ingresado por el usuario. 
+    const handleInputChange = (e) => {
+        console.log('valor de e.target.name', e.target.name)
+        console.log('valor de e.target.value', e.target.value)
+        setEditedProduct({ ...editedProduct, [e.target.name]: e.target.value });
+    };
+    
+
+    const handleUpdateProduct = async () => {
+
+        try {
+          await axios.put(`http://localhost:5000/product/${editedProduct.id}`, editedProduct);
+          fetchProduct();
+          setEditedProduct({ id: 0, name: '', price: '', stock:'', description: ''});
+          Swal.fire({
+            icon: 'success',
+            title: 'Editado correctamente',
+            showConfirmButton: false,
+            timer: 1800
+          })
+          navigate('/products')
+        } catch (error) {
+          console.error(error);
+        }
+    };
 
     return (
         <div>
@@ -86,10 +127,10 @@ export const ProductList = () => {
                                             ):(
                                                 <div>
                                                     <td> 
-                                                        <button type="button" className="btn btn-warning"> Editar </button>
+                                                        <button type="button" className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProduct" onClick={() => onEditProduct(product)}> Editar </button>
                                                     </td>
                                                     <td> 
-                                                        <button type="button" className="btn btn-danger" onClick={() => onDeleteProduct(product.id)}>Eliminar</button>
+                                                        <button type="button" className="btn btn-danger" onClick={() => deleteProduct(product.id)}> Eliminar </button>
                                                     </td>  
                                                 </div>
                                             )
@@ -99,6 +140,67 @@ export const ProductList = () => {
                             }  
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div className="modal fade" id="editProduct"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Editar producto</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className='row'>
+                                <div className='col-md-4'>
+                                    <label>Nombre</label><br></br>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={editedProduct.name}
+                                        onChange={handleInputChange}
+                                        placeholder="Nombre"
+                                    />
+                                </div>
+                                <div className='col-md-2'></div>
+                                <div className='col-md-4'>
+                                    <label>Descripción</label><br></br>
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value={editedProduct.description}
+                                        onChange={handleInputChange}
+                                        placeholder="Descripción"
+                                    />
+                                </div>
+                                <div className='col-md-2'></div>
+                                <div className='col-md-4'>
+                                    <label>Precio</label><br></br>
+                                    <input
+                                        type="text"
+                                        name="price"
+                                        value={editedProduct.price}
+                                        onChange={handleInputChange}
+                                        placeholder="Precio"
+                                    />
+                                </div>
+                                <div className='col-md-2'></div>
+                                <div className='col-md-4'>
+                                    <label>Stock</label><br></br>
+                                    <input
+                                        type="text"
+                                        name="stock"
+                                        value={editedProduct.stock}
+                                        onChange={handleInputChange}
+                                        placeholder="Stock"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={handleUpdateProduct}> Editar </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

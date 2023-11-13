@@ -36,8 +36,22 @@ class Products_resource(Resource):
         return response
 
 class Product_resource(Resource):
-    def delete(self, id):
-        product = Product.query.get(id)
+
+    def put(self, productId):
+
+        product = Product.query.get_or_404(productId)
+        product.name = request.json.get('name',product.name)
+        product.description = request.json.get('description',product.description)
+        product.price = request.json.get('price',product.price)
+        product.stock = request.json.get('stock',product.stock)
+        
+        print( product.name, product.description, product.price, product.stock)
+        
+        db.session.commit()
+        return jsonify({'mensaje': 'Producto editado con exito korean'})
+
+    def delete(self, productId):
+        product = Product.query.get(productId)
         
         db.session.delete(product)
         db.session.commit()

@@ -7,7 +7,7 @@ class Product(db.Model):
     stock = db.Column(db.String(250))
     description = db.Column(db.String(250))
     
-    Product_sales = db.relationship('Sales', backref='product')
+    Product_sales = db.relationship('Sales', backref='product', cascade="all, delete-orphan")
     
     def __str__ (self):
         return (

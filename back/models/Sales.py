@@ -9,10 +9,4 @@ class Sales(db.Model):
     def __str__ (self):
         return (
             f'id: {self.id}, '
-            f'total: {self.total}, '
-            f'user_id: {self.user_id}'
-            f'product_id: {self.product_id}'
         )
-        
-    
-   

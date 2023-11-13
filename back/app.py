@@ -28,7 +28,7 @@ migrate.init_app(app, db)
 app.register_blueprint(auth) # Blueprint
 
 api.add_resource(Products_resource, '/products') #Resource
-api.add_resource(Product_resource, '/product/<int:id>') #Resource
+api.add_resource(Product_resource, '/product/<int:productId>') #Resource
 api.add_resource(User_List, '/users') #Resource
 api.add_resource(Buys, '/buys') #Resource
 api.add_resource(Buy, '/buy/<int:id>') #Resource
